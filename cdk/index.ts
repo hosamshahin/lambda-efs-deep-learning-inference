@@ -64,7 +64,7 @@ export class LambdaEFSMLStack extends cdk.Stack {
       createAcl: {
         ownerGid: '1000',
         ownerUid: '1000',
-        permissions: '777'        
+        permissions: '777'
       }
     })
 
@@ -93,16 +93,18 @@ export class LambdaEFSMLStack extends cdk.Stack {
         phases: {
           build: {
             commands: [
-              'echo "Downloading and copying model..."',
-              'mkdir -p $CODEBUILD_EFS1/lambda/model',
-              'curl https://storage.googleapis.com/tfhub-modules/google/openimages_v4/ssd/mobilenet_v2/1.tar.gz --output /tmp/1.tar.gz',
-              'tar zxf /tmp/1.tar.gz -C $CODEBUILD_EFS1/lambda/model',
-              'echo "Installing virtual environment..."',
-              'mkdir -p $CODEBUILD_EFS1/lambda',
-              'python3 -m venv $CODEBUILD_EFS1/lambda/tensorflow',
-              'echo "Installing Tensorflow..."',
-              'source $CODEBUILD_EFS1/lambda/tensorflow/bin/activate && pip3 install ' +
-              (props.installPackages ? props.installPackages : "tensorflow"),
+              'echo "Clone covid_xrays repo"',
+              'rm -rf $CODEBUILD_EFS1/lambda/covid_xrays',
+              'mkdir -p $CODEBUILD_EFS1/lambda/covid_xrays',
+              'git clone https://github.com/doaa-altarawy/covid_xrays.git $CODEBUILD_EFS1/lambda/covid_xrays',
+              'echo "Create Conda env"',
+              'conda create -p $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays_model/xrays python=3.8 pip',
+              'echo "conda init --all --dry-run --verbose"',
+              'conda init --all --dry-run --verbose',
+              'echo "conda run -p $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays_model/xrays pip install -r $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays_model/requirements.txt"',
+              'conda run -p $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays_model/xrays pip install -r $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays_model/requirements.txt',
+              'echo "conda run -p $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays_model/xrays pip install -e $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays_model/."',
+              'conda run -p $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays_model/xrays pip install -e $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays_model/.',
               'echo "Changing folder permissions..."',
               'chown -R 1000:1000 $CODEBUILD_EFS1/lambda/'
             ]
@@ -111,7 +113,7 @@ export class LambdaEFSMLStack extends cdk.Stack {
       }),
 
       environment: {
-        buildImage: codebuild.LinuxBuildImage.fromDockerRegistry('lambci/lambda:build-python3.8'),
+        buildImage: codebuild.LinuxBuildImage.fromDockerRegistry('continuumio/anaconda3:latest'),
         computeType: codebuild.ComputeType.LARGE,
         privileged: true,
       },
