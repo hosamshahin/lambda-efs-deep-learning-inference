@@ -1,0 +1,813 @@
+Resources:
+  LambdaEFSMLVPCA53F2950:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/Resource
+  LambdaEFSMLVPCPublicSubnet1Subnet2EAB2D82:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/18
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1/Subnet
+  LambdaEFSMLVPCPublicSubnet1RouteTableB9C33CC0:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+      Tags:
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1/RouteTable
+  LambdaEFSMLVPCPublicSubnet1RouteTableAssociation3BA6647B:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: LambdaEFSMLVPCPublicSubnet1RouteTableB9C33CC0
+      SubnetId:
+        Ref: LambdaEFSMLVPCPublicSubnet1Subnet2EAB2D82
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1/RouteTableAssociation
+  LambdaEFSMLVPCPublicSubnet1DefaultRouteC02A190B:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: LambdaEFSMLVPCPublicSubnet1RouteTableB9C33CC0
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: LambdaEFSMLVPCIGW53DBFE8E
+    DependsOn:
+      - LambdaEFSMLVPCVPCGW9AA7EFEC
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1/DefaultRoute
+  LambdaEFSMLVPCPublicSubnet1EIP4557A7E5:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1/EIP
+  LambdaEFSMLVPCPublicSubnet1NATGatewayCE4674EA:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - LambdaEFSMLVPCPublicSubnet1EIP4557A7E5
+          - AllocationId
+      SubnetId:
+        Ref: LambdaEFSMLVPCPublicSubnet1Subnet2EAB2D82
+      Tags:
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet1/NATGateway
+  LambdaEFSMLVPCPublicSubnet2SubnetC37F49B6:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.64.0/18
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: ""
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet2
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet2/Subnet
+  LambdaEFSMLVPCPublicSubnet2RouteTableD3A977F5:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+      Tags:
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet2
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet2/RouteTable
+  LambdaEFSMLVPCPublicSubnet2RouteTableAssociationEB2A168F:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: LambdaEFSMLVPCPublicSubnet2RouteTableD3A977F5
+      SubnetId:
+        Ref: LambdaEFSMLVPCPublicSubnet2SubnetC37F49B6
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet2/RouteTableAssociation
+  LambdaEFSMLVPCPublicSubnet2DefaultRouteBA315B14:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: LambdaEFSMLVPCPublicSubnet2RouteTableD3A977F5
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: LambdaEFSMLVPCIGW53DBFE8E
+    DependsOn:
+      - LambdaEFSMLVPCVPCGW9AA7EFEC
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PublicSubnet2/DefaultRoute
+  LambdaEFSMLVPCPrivateSubnet1Subnet449CF111:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.128.0/18
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet1
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet1/Subnet
+  LambdaEFSMLVPCPrivateSubnet1RouteTableAF82EF35:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+      Tags:
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet1
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet1/RouteTable
+  LambdaEFSMLVPCPrivateSubnet1RouteTableAssociationA50C135C:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: LambdaEFSMLVPCPrivateSubnet1RouteTableAF82EF35
+      SubnetId:
+        Ref: LambdaEFSMLVPCPrivateSubnet1Subnet449CF111
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet1/RouteTableAssociation
+  LambdaEFSMLVPCPrivateSubnet1DefaultRoute1F300AAA:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: LambdaEFSMLVPCPrivateSubnet1RouteTableAF82EF35
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: LambdaEFSMLVPCPublicSubnet1NATGatewayCE4674EA
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet1/DefaultRoute
+  LambdaEFSMLVPCPrivateSubnet2Subnet3B55E7CF:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.192.0/18
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: ""
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet2
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet2/Subnet
+  LambdaEFSMLVPCPrivateSubnet2RouteTable1326E161:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+      Tags:
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet2
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet2/RouteTable
+  LambdaEFSMLVPCPrivateSubnet2RouteTableAssociation3C7A25AD:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: LambdaEFSMLVPCPrivateSubnet2RouteTable1326E161
+      SubnetId:
+        Ref: LambdaEFSMLVPCPrivateSubnet2Subnet3B55E7CF
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet2/RouteTableAssociation
+  LambdaEFSMLVPCPrivateSubnet2DefaultRouteEC1BC3EF:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: LambdaEFSMLVPCPrivateSubnet2RouteTable1326E161
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: LambdaEFSMLVPCPublicSubnet1NATGatewayCE4674EA
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/PrivateSubnet2/DefaultRoute
+  LambdaEFSMLVPCIGW53DBFE8E:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLVPC
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/IGW
+  LambdaEFSMLVPCVPCGW9AA7EFEC:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+      InternetGatewayId:
+        Ref: LambdaEFSMLVPCIGW53DBFE8E
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLVPC/VPCGW
+  LambdaEFSMLEC2SG7F492D85:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: LambdaEFSMLDemo/LambdaEFSMLEC2SG
+      GroupName: LambdaEFSMLEC2SG
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLEC2SG/Resource
+  LambdaEFSMLLambdaSG5C0C65F7:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: LambdaEFSMLDemo/LambdaEFSMLLambdaSG
+      GroupName: LambdaEFSMLLambdaSG
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLLambdaSG/Resource
+  LambdaEFSMLEFSSGB43960B9:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: LambdaEFSMLDemo/LambdaEFSMLEFSSG
+      GroupName: LambdaEFSMLEFSSG
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      VpcId:
+        Ref: LambdaEFSMLVPCA53F2950
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLEFSSG/Resource
+  LambdaEFSMLEFSSGfromLambdaEFSMLDemoLambdaEFSMLEC2SGD3C1B41B20497AF963AE:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      Description: from LambdaEFSMLDemoLambdaEFSMLEC2SGD3C1B41B:2049
+      FromPort: 2049
+      GroupId:
+        Fn::GetAtt:
+          - LambdaEFSMLEFSSGB43960B9
+          - GroupId
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - LambdaEFSMLEC2SG7F492D85
+          - GroupId
+      ToPort: 2049
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLEFSSG/from LambdaEFSMLDemoLambdaEFSMLEC2SGD3C1B41B:2049
+  LambdaEFSMLEFSSGfromLambdaEFSMLDemoLambdaEFSMLLambdaSG677C1E032049E144C4CA:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      Description: from LambdaEFSMLDemoLambdaEFSMLLambdaSG677C1E03:2049
+      FromPort: 2049
+      GroupId:
+        Fn::GetAtt:
+          - LambdaEFSMLEFSSGB43960B9
+          - GroupId
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - LambdaEFSMLLambdaSG5C0C65F7
+          - GroupId
+      ToPort: 2049
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLEFSSG/from LambdaEFSMLDemoLambdaEFSMLLambdaSG677C1E03:2049
+  LambdaEFSMLEFS85B0E724:
+    Type: AWS::EFS::FileSystem
+    Properties:
+      FileSystemTags:
+        - Key: Name
+          Value: LambdaEFSMLDemo/LambdaEFSMLEFS
+      ProvisionedThroughputInMibps: 10
+      ThroughputMode: provisioned
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLEFS/Resource
+  LambdaEFSMLEFSEfsMountTarget178D564E7:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId:
+        Ref: LambdaEFSMLEFS85B0E724
+      SecurityGroups:
+        - Fn::GetAtt:
+            - LambdaEFSMLEFSSGB43960B9
+            - GroupId
+      SubnetId:
+        Ref: LambdaEFSMLVPCPrivateSubnet1Subnet449CF111
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLEFS/EfsMountTarget1
+  LambdaEFSMLEFSEfsMountTarget252F4275D:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId:
+        Ref: LambdaEFSMLEFS85B0E724
+      SecurityGroups:
+        - Fn::GetAtt:
+            - LambdaEFSMLEFSSGB43960B9
+            - GroupId
+      SubnetId:
+        Ref: LambdaEFSMLVPCPrivateSubnet2Subnet3B55E7CF
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLEFS/EfsMountTarget2
+  EfsAccessPoint787A4929:
+    Type: AWS::EFS::AccessPoint
+    Properties:
+      FileSystemId:
+        Ref: LambdaEFSMLEFS85B0E724
+      PosixUser:
+        Gid: "1000"
+        Uid: "1000"
+      RootDirectory:
+        CreationInfo:
+          OwnerGid: "1000"
+          OwnerUid: "1000"
+          Permissions: "777"
+        Path: /lambda
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/EfsAccessPoint/Resource
+  LambdaEFSMLExecuteInferenceServiceRole5F33F6CE:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/AmazonElasticFileSystemClientFullAccess
+    DependsOn:
+      - LambdaEFSMLEFSEfsMountTarget178D564E7
+      - LambdaEFSMLEFSEfsMountTarget252F4275D
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLExecuteInference/ServiceRole/Resource
+  LambdaEFSMLExecuteInferenceServiceRoleDefaultPolicyC768128A:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: elasticfilesystem:ClientMount
+            Condition:
+              StringEquals:
+                elasticfilesystem:AccessPointArn:
+                  Fn::Join:
+                    - ""
+                    - - "arn:"
+                      - Ref: AWS::Partition
+                      - ":elasticfilesystem:us-east-1:"
+                      - Ref: AWS::AccountId
+                      - :access-point/
+                      - Ref: EfsAccessPoint787A4929
+            Effect: Allow
+            Resource: "*"
+          - Action: elasticfilesystem:ClientWrite
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":elasticfilesystem:us-east-1:"
+                  - Ref: AWS::AccountId
+                  - :file-system/
+                  - Ref: LambdaEFSMLEFS85B0E724
+        Version: "2012-10-17"
+      PolicyName: LambdaEFSMLExecuteInferenceServiceRoleDefaultPolicyC768128A
+      Roles:
+        - Ref: LambdaEFSMLExecuteInferenceServiceRole5F33F6CE
+    DependsOn:
+      - LambdaEFSMLEFSEfsMountTarget178D564E7
+      - LambdaEFSMLEFSEfsMountTarget252F4275D
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLExecuteInference/ServiceRole/DefaultPolicy/Resource
+  LambdaEFSMLExecuteInference17332C26:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersa5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67S3Bucket44980364
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersa5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67S3VersionKey203B2432
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersa5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67S3VersionKey203B2432
+      Role:
+        Fn::GetAtt:
+          - LambdaEFSMLExecuteInferenceServiceRole5F33F6CE
+          - Arn
+      FileSystemConfigs:
+        - LocalMountPath: /mnt/python
+          Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":elasticfilesystem:us-east-1:"
+                - Ref: AWS::AccountId
+                - :access-point/
+                - Ref: EfsAccessPoint787A4929
+      Handler: main.lambda_handler
+      MemorySize: 3008
+      ReservedConcurrentExecutions: 10
+      Runtime: python3.8
+      Timeout: 120
+      VpcConfig:
+        SecurityGroupIds:
+          - Fn::GetAtt:
+              - LambdaEFSMLLambdaSG5C0C65F7
+              - GroupId
+        SubnetIds:
+          - Ref: LambdaEFSMLVPCPrivateSubnet1Subnet449CF111
+          - Ref: LambdaEFSMLVPCPrivateSubnet2Subnet3B55E7CF
+    DependsOn:
+      - LambdaEFSMLEFSEfsMountTarget178D564E7
+      - LambdaEFSMLEFSEfsMountTarget252F4275D
+      - LambdaEFSMLExecuteInferenceServiceRoleDefaultPolicyC768128A
+      - LambdaEFSMLExecuteInferenceServiceRole5F33F6CE
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLExecuteInference/Resource
+      aws:asset:path: asset.a5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67
+      aws:asset:property: Code
+  LambdaEFSMLCodeBuildProjectRole71F3A581:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+    DependsOn:
+      - EfsAccessPoint787A4929
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLCodeBuildProject/Role/Resource
+  LambdaEFSMLCodeBuildProjectRoleDefaultPolicy9AA3EE6A:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: ec2:CreateNetworkInterfacePermission
+            Condition:
+              StringEquals:
+                ec2:Subnet:
+                  - Fn::Join:
+                      - ""
+                      - - "arn:"
+                        - Ref: AWS::Partition
+                        - ":ec2:"
+                        - Ref: AWS::Region
+                        - ":"
+                        - Ref: AWS::AccountId
+                        - :subnet/
+                        - Ref: LambdaEFSMLVPCPrivateSubnet1Subnet449CF111
+                  - Fn::Join:
+                      - ""
+                      - - "arn:"
+                        - Ref: AWS::Partition
+                        - ":ec2:"
+                        - Ref: AWS::Region
+                        - ":"
+                        - Ref: AWS::AccountId
+                        - :subnet/
+                        - Ref: LambdaEFSMLVPCPrivateSubnet2Subnet3B55E7CF
+                ec2:AuthorizedService: codebuild.amazonaws.com
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":ec2:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :network-interface/*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:us-east-1:"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: LambdaEFSMLCodeBuildProject41BA57A0
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:us-east-1:"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: LambdaEFSMLCodeBuildProject41BA57A0
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:us-east-1:"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: LambdaEFSMLCodeBuildProject41BA57A0
+                  - -*
+        Version: "2012-10-17"
+      PolicyName: LambdaEFSMLCodeBuildProjectRoleDefaultPolicy9AA3EE6A
+      Roles:
+        - Ref: LambdaEFSMLCodeBuildProjectRole71F3A581
+    DependsOn:
+      - EfsAccessPoint787A4929
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLCodeBuildProject/Role/DefaultPolicy/Resource
+  LambdaEFSMLCodeBuildProject41BA57A0:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Environment:
+        ComputeType: BUILD_GENERAL1_LARGE
+        Image: lambci/lambda:build-python3.8
+        ImagePullCredentialsType: SERVICE_ROLE
+        PrivilegedMode: true
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - LambdaEFSMLCodeBuildProjectRole71F3A581
+          - Arn
+      Source:
+        BuildSpec: >-
+          {
+            "version": "0.1",
+            "phases": {
+              "build": {
+                "commands": [
+                  'echo "Clone covid_xrays repo"',
+                  'rm -rf $CODEBUILD_EFS1/lambda/covid_xrays ; mkdir -p $CODEBUILD_EFS1/lambda/covid_xrays',
+                  'git clone https://github.com/hosamshahin/covid_xrays.git $CODEBUILD_EFS1/lambda/covid_xrays',
+                  'echo "Create Conda env"',
+                  'rm -rf $CODEBUILD_EFS1/lambda/xrays_env ; conda env create -p $CODEBUILD_EFS1/lambda/xrays_env -f $CODEBUILD_EFS1/lambda/covid_xrays/covid_xrays/environment.yml',
+                  'echo "Changing folder permissions..."',
+                  'chown -R 1000:1000 $CODEBUILD_EFS1/lambda/'
+                ]
+              }
+            }
+          }
+        Type: NO_SOURCE
+      Description: Installs Python libraries to EFS.
+      EncryptionKey: alias/aws/s3
+      FileSystemLocations:
+        - Identifier: efs1
+          Location:
+            Fn::Join:
+              - ""
+              - - Ref: LambdaEFSMLEFS85B0E724
+                - .efs.us-east-1.amazonaws.com:/
+          MountOptions: nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2
+          MountPoint: /mnt/python
+          Type: EFS
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+      Name: LambdaEFSMLCodeBuildProject
+      TimeoutInMinutes: 30
+      VpcConfig:
+        SecurityGroupIds:
+          - Fn::GetAtt:
+              - LambdaEFSMLEC2SG7F492D85
+              - GroupId
+        Subnets:
+          - Ref: LambdaEFSMLVPCPrivateSubnet1Subnet449CF111
+          - Ref: LambdaEFSMLVPCPrivateSubnet2Subnet3B55E7CF
+        VpcId:
+          Ref: LambdaEFSMLVPCA53F2950
+    DependsOn:
+      - EfsAccessPoint787A4929
+      - LambdaEFSMLCodeBuildProjectPolicyDocumentE40E0E61
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLCodeBuildProject/Resource
+  LambdaEFSMLCodeBuildProjectPolicyDocumentE40E0E61:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ec2:CreateNetworkInterface
+              - ec2:DescribeNetworkInterfaces
+              - ec2:DeleteNetworkInterface
+              - ec2:DescribeSubnets
+              - ec2:DescribeSecurityGroups
+              - ec2:DescribeDhcpOptions
+              - ec2:DescribeVpcs
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: LambdaEFSMLCodeBuildProjectPolicyDocumentE40E0E61
+      Roles:
+        - Ref: LambdaEFSMLCodeBuildProjectRole71F3A581
+    DependsOn:
+      - EfsAccessPoint787A4929
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/LambdaEFSMLCodeBuildProject/PolicyDocument/Resource
+  TriggerCodeBuildCustomResourcePolicy9A2DE0ED:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codebuild:StartBuild
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: TriggerCodeBuildCustomResourcePolicy9A2DE0ED
+      Roles:
+        - Ref: AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/TriggerCodeBuild/CustomResourcePolicy/Resource
+  TriggerCodeBuildAB4D5304:
+    Type: Custom::AWS
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - AWS679f53fac002430cb0da5b7982bd22872D164C4C
+          - Arn
+      Create:
+        service: CodeBuild
+        action: startBuild
+        parameters:
+          projectName:
+            Ref: LambdaEFSMLCodeBuildProject41BA57A0
+        physicalResourceId:
+          responsePath: build.id
+      InstallLatestAwsSdk: true
+    DependsOn:
+      - TriggerCodeBuildCustomResourcePolicy9A2DE0ED
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/TriggerCodeBuild/Resource/Default
+  AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource
+  AWS679f53fac002430cb0da5b7982bd22872D164C4C:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3Bucket72B03BC9
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3VersionKey520B7554
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3VersionKey520B7554
+      Role:
+        Fn::GetAtt:
+          - AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2
+          - Arn
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Timeout: 120
+    DependsOn:
+      - AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/AWS679f53fac002430cb0da5b7982bd2287/Resource
+      aws:asset:path: asset.4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956
+      aws:asset:property: Code
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.83.0,@aws-cdk/assets=1.83.0,@aws-cdk/aws-applicationautoscaling=1.83.0,@aws-cdk/aws-autoscaling-common=1.83.0,@aws-cdk/aws-cloudwatch=1.83.0,@aws-cdk/aws-codebuild=1.83.0,@aws-cdk/aws-codeguruprofiler=1.83.0,@aws-cdk/aws-ec2=1.83.0,@aws-cdk/aws-ecr=1.83.0,@aws-cdk/aws-ecr-assets=1.83.0,@aws-cdk/aws-efs=1.83.0,@aws-cdk/aws-events=1.83.0,@aws-cdk/aws-iam=1.83.0,@aws-cdk/aws-kms=1.83.0,@aws-cdk/aws-lambda=1.83.0,@aws-cdk/aws-logs=1.83.0,@aws-cdk/aws-s3=1.83.0,@aws-cdk/aws-s3-assets=1.83.0,@aws-cdk/aws-sqs=1.83.0,@aws-cdk/aws-ssm=1.83.0,@aws-cdk/cloud-assembly-schema=1.83.0,@aws-cdk/core=1.83.0,@aws-cdk/custom-resources=1.83.0,@aws-cdk/cx-api=1.83.0,@aws-cdk/region-info=1.83.0,jsii-runtime=node.js/v14.15.3
+    Metadata:
+      aws:cdk:path: LambdaEFSMLDemo/CDKMetadata/Default
+Parameters:
+  ? AssetParametersa5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67S3Bucket44980364
+  : Type: String
+    Description: S3 bucket for asset "a5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67"
+  ? AssetParametersa5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67S3VersionKey203B2432
+  : Type: String
+    Description: S3 key for asset version "a5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67"
+  ? AssetParametersa5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67ArtifactHashC2897BF2
+  : Type: String
+    Description: Artifact hash for asset "a5c30d53f584658188739b4861707bd5a06fb162c906f74779f72c4904c12a67"
+  ? AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3Bucket72B03BC9
+  : Type: String
+    Description: S3 bucket for asset "4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956"
+  ? AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3VersionKey520B7554
+  : Type: String
+    Description: S3 key for asset version "4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956"
+  ? AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956ArtifactHashD15A2D11
+  : Type: String
+    Description: Artifact hash for asset "4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956"
+Outputs:
+  LambdaFunctionName:
+    Value:
+      Ref: LambdaEFSMLExecuteInference17332C26
